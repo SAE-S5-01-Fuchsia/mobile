@@ -1,30 +1,23 @@
 {
   "expo": {
-    "name": "Expo_Template",
-    "slug": "Expo_Template",
+    "name": "App Groupe Fuchsia",
+    "slug": "app-groupe-fuchsia",
+    "scheme": "appgroupefuchsia",
+    "android": {
+      "package": "fr.groupefuchsia.app"
+    },
+    "ios": {
+      "bundleIdentifier": "fr.groupefuchsia.app"
+    },
     "version": "0.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "expotemplate",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.Expo_Template"
-    },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
@@ -39,7 +32,9 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-secure-store",
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,

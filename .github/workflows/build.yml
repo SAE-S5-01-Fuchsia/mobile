@@ -1,8 +1,6 @@
 name: Build - Production APK (Gradle Pure)
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:

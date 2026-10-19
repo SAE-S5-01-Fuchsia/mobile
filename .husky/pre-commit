@@ -1,1 +1,1 @@
-node scripts/lint-check.js
+npx lint-staged
