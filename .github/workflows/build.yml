@@ -1,0 +1,77 @@
+name: Build - Production APK (Gradle Pure)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-production:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Run linter
+        run: npm run lint:check
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --clean
+
+      - name: Build production APK with Gradle
+        run: cd android && ./gradlew assembleRelease
+        env:
+          NODE_ENV: production
+
+      - name: Find APK files
+        id: find-apk
+        run: |
+          APK_PATH=$(find android -name "*-release.apk" -type f | head -1)
+          if [ -z "$APK_PATH" ]; then
+            echo "APK not found!"
+            exit 1
+          fi
+          echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+          echo "APK found at: $APK_PATH"
+
+      - name: Copy APK to artifacts folder
+        run: |
+          mkdir -p artifact
+          cp "${{ steps.find-apk.outputs.apk_path }}" artifact/app-production.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-apk
+          path: artifact/app-production.apk
+          retention-days: 30
+
+      - name: Build summary
+        run: |
+          echo "✅ Production APK built successfully!"
+          echo "📦 Standalone application (no Expo server required)"
+          echo "Download the APK from the workflow artifacts above ⬆️"
